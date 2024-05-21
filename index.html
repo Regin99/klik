@@ -66,11 +66,12 @@
 
       const addCounter = () => {
         count++;
-        localStorage.setItem('count', count);
         counter.innerHTML = count;
+        localStorage.setItem('count', count);
       };
 
       image.addEventListener('mousedown', () => {
+        event.preventDefault();
         image.classList.add('scaled');
         addCounter();
       });
@@ -84,12 +85,13 @@
       });
 
       image.addEventListener('touchstart', () => {
+        event.preventDefault();
         image.classList.add('scaled');
+        addCounter();
       });
 
       image.addEventListener('touchend', () => {
         image.classList.remove('scaled');
-        addCounter();
       });
 
       image.addEventListener('touchcancel', () => {
