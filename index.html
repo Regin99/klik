@@ -59,24 +59,24 @@
       image.addEventListener('mouseup', () => {
         image.classList.remove('scaled');
       });
+
+      image.addEventListener('mouseleave', () => {
+        image.classList.remove('scaled');
+      });
+
+      image.addEventListener('touchstart', () => {
+        image.classList.add('scaled');
+      });
+
+      image.addEventListener('touchend', () => {
+        image.classList.remove('scaled');
+      });
+
+      image.addEventListener('touchcancel', () => {
+        image.classList.remove('scaled');
+      });
       // Init TWA
       Telegram.WebApp.ready();
-
-      // Event occurs whenever theme settings are changed in the user's Telegram app (including switching to night mode).
-      Telegram.WebApp.onEvent('themeChanged', function () {
-        document.documentElement.className = Telegram.WebApp.colorScheme;
-      });
-
-      // Show main button
-      Telegram.WebApp.MainButton.setParams({
-        text: 'Main Button'
-      });
-      Telegram.WebApp.MainButton.onClick(function () {
-        Telegram.WebApp.showAlert('Main Button was clicked');
-      });
-      Telegram.WebApp.MainButton.show();
-
-      // Function to call showPopup API
 
       function setViewportData() {
         var sizeEl = document.getElementById('viewport-params-size');
@@ -88,19 +88,9 @@
 
       setViewportData();
       Telegram.WebApp.onEvent('viewportChanged', setViewportData);
-
-      Telegram.WebApp.onEvent('themeChanged', function () {
-        document.body.setAttribute(
-          'style',
-          '--bg-color:' + Telegram.WebApp.backgroundColor
-        );
-      });
     </script>
 
     <!-- Eruda is console for mobile browsers -->
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>
-      eruda.init();
-    </script>
   </body>
 </html>
