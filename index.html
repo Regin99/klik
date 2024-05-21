@@ -49,6 +49,7 @@
         background-size: cover;
         background-repeat: no-repeat;
         opacity: 0;
+        pointer-events: none;
         animation: fade-in 0.5s ease-in, fade-out 0.5s ease-out,
           fall 2s forwards; /* добавим анимацию fade-in и fade-out и увеличим время анимации fall */
       }
@@ -166,9 +167,12 @@
       image.addEventListener('mousedown', (event) => {
         event.preventDefault();
         image.classList.add('scaled');
+        const rect = container.getBoundingClientRect(); // Получаем координаты контейнера
+        const x = event.clientX - rect.left; // Относительная координата X клика относительно контейнера
+        const y = event.clientY - rect.top; // Относительная координата Y клика относительно контейнера
         addCounter();
         createTear();
-        createSpark(event.clientX, event.clientY);
+        createSpark(x, y);
       });
 
       image.addEventListener('mouseup', () => {
@@ -182,9 +186,12 @@
       image.addEventListener('touchstart', (event) => {
         event.preventDefault();
         image.classList.add('scaled');
+        const rect = container.getBoundingClientRect(); // Получаем координаты контейнера
+        const x = event.touches[0].clientX - rect.left; // Относительная координата X касания относительно контейнера
+        const y = event.touches[0].clientY - rect.top; // Относительная координата Y касания относительно контейнера
         addCounter();
         createTear();
-        createSpark(event.clientX, event.clientY);
+        createSpark(x, y);
       });
 
       image.addEventListener('touchend', () => {
