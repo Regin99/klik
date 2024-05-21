@@ -12,6 +12,7 @@
         height: 100vh;
         background-color: #222222;
         flex-direction: column;
+        overflow: hidden; /* Убираем скролл */
       }
 
       .container {
@@ -40,13 +41,77 @@
       .scaled {
         transform: scale(0.9);
       }
+      .tear {
+        position: absolute;
+        width: 40px; /* увеличим высоту слезы */
+        height: 60px; /* увеличим высоту слезы */
+        background-image: url('https://cdn.pixabay.com/photo/2016/08/01/05/09/water-1560478_960_720.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        opacity: 0;
+        animation: fade-in 0.5s ease-in, fade-out 0.5s ease-out,
+          fall 2s forwards; /* добавим анимацию fade-in и fade-out и увеличим время анимации fall */
+      }
+
+      @keyframes fade-in {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fade-out {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes fall {
+        0% {
+          opacity: 1;
+          transform: translateY(-40px); /* уменьшим начальную высоту падения */
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(40vh); /* уменьшим высоту падения */
+        }
+      }
+
+      .spark {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-color: #fff;
+        border-radius: 50%;
+        opacity: 0;
+        animation: spark-animation 1s forwards;
+        pointer-events: none;
+      }
+
+      @keyframes spark-animation {
+        0% {
+          opacity: 1;
+          transform: scale(0);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1);
+        }
+      }
     </style>
   </head>
 
   <body>
     <div class="container">
       <div class="counter-container">
+        <h1 class="counter">Шлёпнул гоя&nbsp;</h1>
         <h1 class="counter" id="counter">0</h1>
+        <h1 class="counter">&nbsp;раз</h1>
       </div>
       <img
         id="image"
@@ -61,8 +126,36 @@
     <script>
       const image = document.getElementById('image');
       const counter = document.getElementById('counter');
+      const container = document.querySelector('.container');
       let count = localStorage.getItem('count') || 0;
       counter.innerHTML = count;
+
+      const createTear = () => {
+        const tear = document.createElement('div');
+        tear.classList.add('tear');
+        const { width, height } = container.getBoundingClientRect();
+        const randomX =
+          Math.random() * (width - 40); /* увеличим диапазон появления слёз */
+        const randomY =
+          Math.random() * (height - 60); /* увеличим диапазон появления слёз */
+        tear.style.left = `${randomX}px`;
+        tear.style.top = `${randomY}px`;
+        container.appendChild(tear);
+        setTimeout(() => {
+          tear.remove();
+        }, 1000); /* увеличим время жизни слёз */
+      };
+
+      const createSpark = (x, y) => {
+        const spark = document.createElement('div');
+        spark.classList.add('spark');
+        spark.style.left = `${x - 15}px`;
+        spark.style.top = `${y - 15}px`;
+        container.appendChild(spark);
+        setTimeout(() => {
+          spark.remove();
+        }, 1000); /* увеличим время жизни искр */
+      };
 
       const addCounter = () => {
         count++;
@@ -70,10 +163,12 @@
         localStorage.setItem('count', count);
       };
 
-      image.addEventListener('mousedown', () => {
+      image.addEventListener('mousedown', (event) => {
         event.preventDefault();
         image.classList.add('scaled');
         addCounter();
+        createTear();
+        createSpark(event.clientX, event.clientY);
       });
 
       image.addEventListener('mouseup', () => {
@@ -84,10 +179,12 @@
         image.classList.remove('scaled');
       });
 
-      image.addEventListener('touchstart', () => {
+      image.addEventListener('touchstart', (event) => {
         event.preventDefault();
         image.classList.add('scaled');
         addCounter();
+        createTear();
+        createSpark(event.clientX, event.clientY);
       });
 
       image.addEventListener('touchend', () => {
